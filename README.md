@@ -6,12 +6,15 @@ Simple task management system. Allowed to operate tasks via Restful APIs
 ## Features
 | Feature | HTTP Method | Path |
 | -- | -- | -- |
-| Login | POST | /login |
+| Register Account | POST | /users |
+| Change Password | PATCH | /users/:uuid |
+| Delete Account | POST | /users/:uuid |
+| Login | POST | /users/login |
 | Create Task | POST | /tasks |
 | Read Tasks | GET | /tasks |
-| Read Task by ID | GET | /tasks/:id |
-| Update Task | PUT | /tasks/:id |
-| Delete Task | DELETE | /tasks/:id |
+| Read Task by ID | GET | /tasks/:uuid |
+| Update Task | PUT | /tasks/:uuid |
+| Delete Task | DELETE | /tasks/:uuid |
 
 ## Installation
 
