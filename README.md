@@ -7,8 +7,8 @@ Simple task management system. Allowed to operate tasks via Restful APIs
 | Feature | HTTP Method | Path |
 | -- | -- | -- |
 | Register Account | POST | /users |
-| Change Password | PATCH | /users/:uuid |
-| Delete Account | POST | /users/:uuid/delete-account |
+| Change Password | PUT | /users/password |
+| Delete Account | POST | /users/delete-account |
 | Login | POST | /users/login |
 | Create Task | POST | /tasks |
 | Read Tasks | GET | /tasks |
@@ -20,6 +20,12 @@ Simple task management system. Allowed to operate tasks via Restful APIs
 
 ```bash
 $ npm install
+```
+
+## Set up local database via Docker
+
+```bash
+$ docker compose up -d
 ```
 
 ## Running the app
