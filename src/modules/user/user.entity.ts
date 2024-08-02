@@ -5,17 +5,13 @@ import {
     UpdateDateColumn,
     CreateDateColumn,
 } from "typeorm";
-import { uuid } from "src/common/types/type";
 
 @Entity({ name: "users" })
 export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @PrimaryGeneratedColumn("uuid")
-    uuid: uuid;
-
-    @Column({ type: "varchar", nullable: false })
+    @Column({ type: "varchar", nullable: false, unique: true })
     email: string;
 
     @Column({ type: "varchar", length: 100, nullable: false })
