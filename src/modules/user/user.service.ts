@@ -1,12 +1,15 @@
 import { Injectable } from "@nestjs/common";
+import { CreateUserDto } from "./dto";
+import { uuid } from "src/common/types/type";
 // import { User } from "./user.entity";
 
 @Injectable()
 export class UserService {
     private users: string[] = [];
 
-    createUser(): string {
-        return null;
+    createUser(createUserDto: CreateUserDto): uuid {
+        console.log(createUserDto);
+        return "sdasd-a-a-a-a";
     }
 
     changePassword(): string[] {
