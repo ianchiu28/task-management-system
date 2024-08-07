@@ -20,7 +20,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
             : HttpStatus.INTERNAL_SERVER_ERROR;
 
         const message = isHttpException
-            ? (exception.getResponse() as IExceptionResponse).message
+            ? (exception.getResponse() as IExceptionResponse).message.trim()
             : "Internal server error";
 
         response.status(status).json({

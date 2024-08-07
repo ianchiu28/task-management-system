@@ -1,28 +1,46 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { CreateUserDto } from "./dto";
-import { User } from "./user.entity";
+import { UserRepository } from "./user.repository";
+import { ERROR_PREFIX } from "src/common/constants";
 
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectRepository(User)
-        private userRepository: Repository<User>,
-    ) {}
+    constructor(private readonly userRepository: UserRepository) {}
 
     async createUser(createUserDto: CreateUserDto): Promise<void> {
+        // Check if user already exists
+        const isUserExist = await this.userRepository.exists({
+            where: { email: createUserDto.email },
+        });
+        if (isUserExist) {
+            throw new BadRequestException(`
+                ${ERROR_PREFIX.RESOURCE_DUPLICATED}: User already exists
+            `);
+        }
+
+        // Make salt and hash password
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
 
+        // Create user and save it
         const user = this.userRepository.create({
             ...createUserDto,
             salt,
             password: hashedPassword,
         });
-        const result = await this.userRepository.save(user);
-        console.log(result);
+
+        try {
+            await this.userRepository.save(user);
+        } catch (error) {
+            if (error.message.includes("duplicate key")) {
+                throw new BadRequestException(`
+                    ${ERROR_PREFIX.RESOURCE_DUPLICATED}: User already exists
+                `);
+            }
+
+            throw error;
+        }
     }
 
     changePassword(): string[] {
