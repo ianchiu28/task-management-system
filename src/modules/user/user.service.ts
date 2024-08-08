@@ -9,19 +9,18 @@ export class UserService {
     constructor(private readonly userRepository: UserRepository) {}
 
     async createUser(createUserDto: CreateUserDto): Promise<void> {
+        const { email, password } = createUserDto;
+        const duplicatedError = new BadRequestException(`
+            ${ERROR_PREFIX.RESOURCE_DUPLICATED}: User already exists
+        `);
+
         // Check if user already exists
-        const isUserExist = await this.userRepository.exists({
-            where: { email: createUserDto.email },
-        });
-        if (isUserExist) {
-            throw new BadRequestException(`
-                ${ERROR_PREFIX.RESOURCE_DUPLICATED}: User already exists
-            `);
-        }
+        const isUserExist = await this.userRepository.isExistByEmail(email);
+        if (isUserExist) throw duplicatedError;
 
         // Make salt and hash password
         const salt = await bcrypt.genSalt();
-        const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         // Create user and save it
         const user = this.userRepository.create({
@@ -29,18 +28,10 @@ export class UserService {
             salt,
             password: hashedPassword,
         });
-
-        try {
-            await this.userRepository.save(user);
-        } catch (error) {
-            if (error.message.includes("duplicate key")) {
-                throw new BadRequestException(`
-                    ${ERROR_PREFIX.RESOURCE_DUPLICATED}: User already exists
-                `);
-            }
-
-            throw error;
-        }
+        await this.userRepository.saveWithDuplicatedHandler(
+            user,
+            duplicatedError,
+        );
     }
 
     changePassword(): string[] {
