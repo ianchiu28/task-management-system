@@ -4,7 +4,7 @@ import {
     UnauthorizedException,
 } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
-import { CreateUserReqDto, LoginDto } from "./dto";
+import { CreateUserReqDto, LoginReqDto } from "./dto";
 import { UserRepository } from "./user.repository";
 import { ERROR_PREFIX } from "src/common/constants";
 import * as jwt from "jsonwebtoken";
@@ -47,7 +47,30 @@ export class UserService {
         return null;
     }
 
-    login(): string {
-        return null;
+    async login(loginReqDto: LoginReqDto): Promise<string> {
+        const { email, password } = loginReqDto;
+
+        // Get salt and hashed password by email
+        const { salt, password: dbPassword } =
+            await this.userRepository.getPasswordInfo(email);
+
+        // Make hash password
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        if (hashedPassword !== dbPassword) {
+            throw new UnauthorizedException(`
+                ${ERROR_PREFIX.INVALID_CREDENTIALS}: Incorrect email or password
+            `);
+        }
+
+        // Generate access token with expiration time
+        const options = {
+            issuer: "task-management",
+            subject: email,
+            expiresIn: "8h",
+        };
+        const accessToken = jwt.sign({}, /*process.env.JWT_SECRET*/"TEST", options);
+
+        return accessToken;
     }
 }

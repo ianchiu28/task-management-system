@@ -7,7 +7,7 @@ import {
     Body,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { CreateUserReqDto, LoginDto } from "./dto";
+import { CreateUserReqDto, LoginReqDto, LoginResDto } from "./dto";
 
 @Controller("users")
 export class UserController {
@@ -37,8 +37,8 @@ export class UserController {
 
     @Post("login")
     @HttpCode(HttpStatus.OK)
-    login(@Body() loginDto: string) {
-        console.log(loginDto);
-        return this.userService.login();
+    async login(@Body() loginReqDto: LoginReqDto): Promise<LoginResDto> {
+        const accessToken = await this.userService.login(loginReqDto);
+        return { accessToken };
     }
 }

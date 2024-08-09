@@ -32,4 +32,14 @@ export class UserRepository extends Repository<UserEntity> {
             throw error;
         }
     }
+
+    async getPasswordInfo(email: string): Promise<UserEntity> {
+        return this.userRepository.findOne({
+            select: {
+                salt: true,
+                password: true,
+            },
+            where: { email },
+        });
+    }
 }
