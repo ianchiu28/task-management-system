@@ -8,10 +8,18 @@ import { CreateUserReqDto, LoginReqDto } from "./dto";
 import { UserRepository } from "./user.repository";
 import { ERROR_PREFIX } from "src/common/constants";
 import * as jwt from "jsonwebtoken";
+import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class UserService {
-    constructor(private readonly userRepository: UserRepository) {}
+    #jwtSecret: string;
+
+    constructor(
+        private readonly configService: ConfigService,
+        private readonly userRepository: UserRepository,
+    ) {
+        this.#jwtSecret = this.configService.get<string>("JWT_SECRET");
+    }
 
     async createUser(createUserReqDto: CreateUserReqDto): Promise<void> {
         const { email, password } = createUserReqDto;
@@ -69,7 +77,7 @@ export class UserService {
             subject: email,
             expiresIn: "8h",
         };
-        const accessToken = jwt.sign({}, /*process.env.JWT_SECRET*/"TEST", options);
+        const accessToken = jwt.sign({}, this.#jwtSecret, options);
 
         return accessToken;
     }
