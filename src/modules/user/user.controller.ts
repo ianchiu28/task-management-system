@@ -6,8 +6,9 @@ import {
     Patch,
     Body,
 } from "@nestjs/common";
-import { UserService } from "./user.service";
+
 import { CreateUserReqDto, LoginReqDto, LoginResDto } from "./dto";
+import { UserService } from "./user.service";
 
 @Controller("users")
 export class UserController {

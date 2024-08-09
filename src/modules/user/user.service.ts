@@ -3,12 +3,14 @@ import {
     BadRequestException,
     UnauthorizedException,
 } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
+
+import { ERROR_PREFIX } from "../../common/constants";
+
 import { CreateUserReqDto, LoginReqDto } from "./dto";
 import { UserRepository } from "./user.repository";
-import { ERROR_PREFIX } from "src/common/constants";
-import * as jwt from "jsonwebtoken";
-import { ConfigService } from "@nestjs/config";
 
 @Injectable()
 export class UserService {

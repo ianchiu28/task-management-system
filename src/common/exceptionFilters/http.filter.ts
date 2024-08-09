@@ -5,6 +5,7 @@ import {
     HttpException,
     HttpStatus,
 } from "@nestjs/common";
+
 import { IExceptionResponse } from "../interfaces";
 
 @Catch()
