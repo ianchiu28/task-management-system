@@ -20,11 +20,19 @@ export class HttpExceptionFilter implements ExceptionFilter {
             : HttpStatus.INTERNAL_SERVER_ERROR;
 
         const message = isHttpException
-            ? (exception.getResponse() as IExceptionResponse).message.trim()
+            ? (exception.getResponse() as IExceptionResponse).message
             : "Internal server error";
 
         response.status(status).json({
-            message,
+            message: this.transformMessage(message),
         });
+    }
+
+    transformMessage(message: string | string[]): string {
+        if (Array.isArray(message)) {
+            return message.join(", ").trim();
+        }
+
+        return message.trim();
     }
 }
