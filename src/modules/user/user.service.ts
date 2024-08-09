@@ -1,21 +1,26 @@
-import { Injectable, BadRequestException } from "@nestjs/common";
+import {
+    Injectable,
+    BadRequestException,
+    UnauthorizedException,
+} from "@nestjs/common";
 import * as bcrypt from "bcrypt";
-import { CreateUserDto } from "./dto";
+import { CreateUserReqDto, LoginDto } from "./dto";
 import { UserRepository } from "./user.repository";
 import { ERROR_PREFIX } from "src/common/constants";
+import * as jwt from "jsonwebtoken";
 
 @Injectable()
 export class UserService {
     constructor(private readonly userRepository: UserRepository) {}
 
-    async createUser(createUserDto: CreateUserDto): Promise<void> {
-        const { email, password } = createUserDto;
+    async createUser(createUserReqDto: CreateUserReqDto): Promise<void> {
+        const { email, password } = createUserReqDto;
         const duplicatedError = new BadRequestException(`
             ${ERROR_PREFIX.RESOURCE_DUPLICATED}: User already exists
         `);
 
         // Check if user already exists
-        const isUserExist = await this.userRepository.isExistByEmail(email);
+        const isUserExist = await this.userRepository.isExist(email);
         if (isUserExist) throw duplicatedError;
 
         // Make salt and hash password
@@ -24,7 +29,7 @@ export class UserService {
 
         // Create user and save it
         const user = this.userRepository.create({
-            ...createUserDto,
+            ...createUserReqDto,
             salt,
             password: hashedPassword,
         });

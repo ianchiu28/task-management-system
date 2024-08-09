@@ -14,7 +14,7 @@ export class UserRepository extends Repository<UserEntity> {
         );
     }
 
-    async isExistByEmail(email: string): Promise<boolean> {
+    async isExist(email: string): Promise<boolean> {
         return this.userRepository.exists({ where: { email } });
     }
 

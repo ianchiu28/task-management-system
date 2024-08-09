@@ -7,7 +7,7 @@ import {
     Body,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { CreateUserDto } from "./dto";
+import { CreateUserReqDto, LoginDto } from "./dto";
 
 @Controller("users")
 export class UserController {
@@ -15,8 +15,10 @@ export class UserController {
 
     @Post()
     @HttpCode(HttpStatus.OK)
-    createUser(@Body() createUserDto: CreateUserDto) {
-        return this.userService.createUser(createUserDto);
+    async createUser(
+        @Body() createUserReqDto: CreateUserReqDto,
+    ): Promise<void> {
+        await this.userService.createUser(createUserReqDto);
     }
 
     @Patch("password")
