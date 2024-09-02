@@ -8,6 +8,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Observable } from "rxjs";
 
 import { ERROR_PREFIX } from "../constants";
+import { IRequestUser } from "../interfaces";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -30,7 +31,7 @@ export class AuthGuard implements CanActivate {
             const decoded = this.jwtService.verify(token);
             request.user = {
                 email: decoded.sub,
-            };
+            } as IRequestUser;
             return true;
         } catch (error) {
             throw new UnauthorizedException(`

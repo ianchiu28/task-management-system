@@ -6,11 +6,18 @@ import {
     Patch,
     Body,
     UseGuards,
+    Request,
 } from "@nestjs/common";
 
 import { AuthGuard } from "../../common/guards";
+import { IRequestUser } from "../../common/interfaces";
 
-import { CreateUserReqDto, LoginReqDto, LoginResDto } from "./dto";
+import {
+    CreateUserReqDto,
+    LoginReqDto,
+    LoginResDto,
+    ChangePasswordReqDto,
+} from "./dto";
 import { UserService } from "./user.service";
 
 @Controller("users")
@@ -28,9 +35,12 @@ export class UserController {
     @Patch("password")
     @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard)
-    changePassword(@Body() changePasswordDto: string) {
-        console.log(changePasswordDto);
-        return this.userService.changePassword();
+    async changePassword(
+        @Request() req: { user: IRequestUser },
+        @Body() changePasswordDto: ChangePasswordReqDto,
+    ) {
+        const { email } = req.user;
+        await this.userService.changePassword(email, changePasswordDto);
     }
 
     @Post("delete-account")

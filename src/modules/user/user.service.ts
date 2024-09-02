@@ -8,7 +8,7 @@ import * as bcrypt from "bcrypt";
 
 import { ERROR_PREFIX } from "../../common/constants";
 
-import { CreateUserReqDto, LoginReqDto } from "./dto";
+import { CreateUserReqDto, LoginReqDto, ChangePasswordReqDto } from "./dto";
 import { UserRepository } from "./user.repository";
 
 @Injectable()
@@ -44,8 +44,13 @@ export class UserService {
         );
     }
 
-    changePassword(): string[] {
-        return null;
+    async changePassword(
+        email: string,
+        changePasswordDto: ChangePasswordReqDto,
+    ): Promise<void> {
+        const { oldPassword, newPassword } = changePasswordDto;
+
+        console.log(email, oldPassword, newPassword);
     }
 
     deleteUser(): string {
