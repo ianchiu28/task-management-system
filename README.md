@@ -28,6 +28,20 @@ $ npm install
 $ docker compose up -d
 ```
 
+## Set up environment variables
+
+```bash
+export DATABASE_HOST=localhost
+export DATABASE_PORT=5432
+export DATABASE_USERNAME=user
+export DATABASE_PASSWORD=password
+export DATABASE_NAME=task_management
+
+export JWT_SECRET=jwt_secret
+export JWT_EXPIRES_IN=1h
+export JWT_ISSUER=task_management
+```
+
 ## Running the app
 
 ```bash
