@@ -5,7 +5,10 @@ import {
     Post,
     Patch,
     Body,
+    UseGuards,
 } from "@nestjs/common";
+
+import { AuthGuard } from "../../common/guards";
 
 import { CreateUserReqDto, LoginReqDto, LoginResDto } from "./dto";
 import { UserService } from "./user.service";
@@ -24,12 +27,13 @@ export class UserController {
 
     @Patch("password")
     @HttpCode(HttpStatus.OK)
+    @UseGuards(AuthGuard)
     changePassword(@Body() changePasswordDto: string) {
         console.log(changePasswordDto);
         return this.userService.changePassword();
     }
 
-    @Post("/delete-account")
+    @Post("delete-account")
     @HttpCode(HttpStatus.OK)
     deleteUser(@Body() deleteUserDto: string) {
         console.log(deleteUserDto);
