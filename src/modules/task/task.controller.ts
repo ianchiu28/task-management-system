@@ -3,7 +3,7 @@ import {
     Get,
     Post,
     Patch,
-//     Delete,
+    Delete,
     Body,
     Param,
     UseGuards,
@@ -61,13 +61,13 @@ export class TaskController {
         return this.taskService.updateTask(email, uuid, updateTaskReqDto);
     }
 
-//     @Delete(":uuid")
-//     @HttpCode(HttpStatus.NO_CONTENT)
-//     async deleteTask(
-//         @Request() req: { user: IRequestUser },
-//         @Param("uuid") uuid: string
-//     ) {
-//         const { email } = req.user;
-//         await this.taskService.deleteTask(email, uuid);
-//     }
+    @Delete(":uuid")
+    @HttpCode(HttpStatus.OK)
+    async deleteTask(
+        @Request() req: { user: IRequestUser },
+        @Param("uuid") uuid: string,
+    ) {
+        const { email } = req.user;
+        await this.taskService.deleteTask(email, uuid);
+    }
 }

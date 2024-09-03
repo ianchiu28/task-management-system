@@ -79,8 +79,17 @@ export class TaskService {
         await this.taskRepository.save(task);
     }
 
-//     async deleteTask(email: string, uuid: string): Promise<void> {
-//         const task = await this.getTaskById(email, uuid);
-//         await this.taskRepository.remove(task);
-//     }
+    async deleteTask(email: string, uuid: string): Promise<void> {
+        const task = await this.taskRepository.findOne({
+            where: { uuid, user: { email } },
+        });
+
+        if (!task) {
+            throw new NotFoundException(
+                `${ERROR_PREFIX.NOT_FOUND}: Task not found`,
+            );
+        }
+
+        await this.taskRepository.remove(task);
+    }
 }
