@@ -2,7 +2,7 @@ import {
     Controller,
     Get,
     Post,
-//     Put,
+    Patch,
 //     Delete,
     Body,
     Param,
@@ -15,7 +15,7 @@ import {
 import { AuthGuard } from "../../common/guards";
 import { IRequestUser } from "../../common/interfaces";
 
-import { CreateTaskReqDto, CreateTaskResDto } from "./dto";
+import { CreateTaskReqDto, CreateTaskResDto, UpdateTaskReqDto } from "./dto";
 import { TaskService } from "./task.service";
 
 @Controller("tasks")
@@ -50,16 +50,16 @@ export class TaskController {
         return this.taskService.getTaskByUuid(email, uuid);
     }
 
-//     @Put(":uuid")
-//     @HttpCode(HttpStatus.OK)
-//     async updateTask(
-//         @Request() req: { user: IRequestUser },
-//         @Param("uuid") uuid: string,
-//         @Body() updateTaskDto: UpdateTaskDto
-//     ) {
-//         const { email } = req.user;
-//         return this.taskService.updateTask(email, uuid, updateTaskDto);
-//     }
+    @Patch(":uuid")
+    @HttpCode(HttpStatus.OK)
+    async updateTask(
+        @Request() req: { user: IRequestUser },
+        @Param("uuid") uuid: string,
+        @Body() updateTaskReqDto: UpdateTaskReqDto,
+    ) {
+        const { email } = req.user;
+        return this.taskService.updateTask(email, uuid, updateTaskReqDto);
+    }
 
 //     @Delete(":uuid")
 //     @HttpCode(HttpStatus.NO_CONTENT)

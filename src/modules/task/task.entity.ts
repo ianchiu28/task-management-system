@@ -23,7 +23,7 @@ export class TaskEntity {
 
     @Column({
         type: "enum",
-        enum: ["pending", "in_progress", "completed"],
+        enum: ["pending", "inProgress", "completed"],
         default: "pending",
     })
     status: string;
