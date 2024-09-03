@@ -3,7 +3,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { ERROR_PREFIX } from "../../common/constants";
 import { UserRepository } from "../user/user.repository";
 
-import { CreateTaskReqDto, CreateTaskResDto } from "./dto";
+import { CreateTaskReqDto, CreateTaskResDto, ReadTasksResDto } from "./dto";
 import { TaskRepository } from "./task.repository";
 
 @Injectable()
@@ -33,9 +33,12 @@ export class TaskService {
         return { uuid: task.uuid };
     }
 
-//     async getTasks(email: string): Promise<TaskEntity[]> {
-//         return this.taskRepository.find({ where: { userEmail: email } });
-//     }
+    async getTasks(email: string): Promise<ReadTasksResDto> {
+        const tasks = await this.taskRepository.find({
+            where: { user: { email } },
+        });
+        return { tasks };
+    }
 
 //     async getTaskById(email: string, uuid: string): Promise<TaskEntity> {
 //         const task = await this.taskRepository.findOne({ where: { uuid, userEmail: email } });
