@@ -5,7 +5,7 @@ import {
 //     Put,
 //     Delete,
     Body,
-//     Param,
+    Param,
     UseGuards,
     Request,
     HttpCode,
@@ -40,15 +40,15 @@ export class TaskController {
         return this.taskService.getTasks(email);
     }
 
-//     @Get(":uuid")
-//     @HttpCode(HttpStatus.OK)
-//     async getTaskById(
-//         @Request() req: { user: IRequestUser },
-//         @Param("uuid") uuid: string
-//     ) {
-//         const { email } = req.user;
-//         return this.taskService.getTaskById(email, uuid);
-//     }
+    @Get(":uuid")
+    @HttpCode(HttpStatus.OK)
+    async getTaskByUuid(
+        @Request() req: { user: IRequestUser },
+        @Param("uuid") uuid: string,
+    ) {
+        const { email } = req.user;
+        return this.taskService.getTaskByUuid(email, uuid);
+    }
 
 //     @Put(":uuid")
 //     @HttpCode(HttpStatus.OK)

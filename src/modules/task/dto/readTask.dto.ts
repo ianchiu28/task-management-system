@@ -8,7 +8,7 @@ import {
     ValidateNested,
 } from "class-validator";
 
-export class TaskDto {
+export class ReadTaskResDto {
     @IsUUID()
     @IsNotEmpty()
     uuid: string;
@@ -30,6 +30,6 @@ export class TaskDto {
 export class ReadTasksResDto {
     @IsArray()
     @ValidateNested({ each: true })
-    @Type(() => TaskDto)
-    tasks: TaskDto[];
+    @Type(() => ReadTaskResDto)
+    tasks: ReadTaskResDto[];
 }
