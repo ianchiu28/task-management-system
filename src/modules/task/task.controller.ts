@@ -1,6 +1,6 @@
 import {
     Controller,
-//     Get,
+    Get,
     Post,
 //     Put,
 //     Delete,
@@ -33,12 +33,12 @@ export class TaskController {
         return this.taskService.createTask(email, createTaskReqDto);
     }
 
-//     @Get()
-//     @HttpCode(HttpStatus.OK)
-//     async getTasks(@Request() req: { user: IRequestUser }) {
-//         const { email } = req.user;
-//         return this.taskService.getTasks(email);
-//     }
+    @Get()
+    @HttpCode(HttpStatus.OK)
+    async getTasks(@Request() req: { user: IRequestUser }) {
+        const { email } = req.user;
+        return this.taskService.getTasks(email);
+    }
 
 //     @Get(":uuid")
 //     @HttpCode(HttpStatus.OK)
