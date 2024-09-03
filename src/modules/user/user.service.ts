@@ -50,7 +50,24 @@ export class UserService {
     ): Promise<void> {
         const { oldPassword, newPassword } = changePasswordDto;
 
-        console.log(email, oldPassword, newPassword);
+        // Get user's current password info
+        const { salt, password: currentHashedPassword } =
+            await this.userRepository.getPasswordInfo(email);
+
+        // Verify old password
+        const hashedOldPassword = await bcrypt.hash(oldPassword, salt);
+        if (hashedOldPassword !== currentHashedPassword) {
+            throw new UnauthorizedException(`
+                ${ERROR_PREFIX.INVALID_CREDENTIALS}: Incorrect old password
+            `);
+        }
+
+        // Generate new salt and hash new password
+        const newSalt = await bcrypt.genSalt();
+        const newHashedPassword = await bcrypt.hash(newPassword, newSalt);
+
+        // Update user's password in the repository
+        await this.userRepository.updatePassword(email, newHashedPassword, newSalt);
     }
 
     deleteUser(): string {

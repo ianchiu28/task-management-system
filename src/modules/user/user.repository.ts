@@ -43,4 +43,15 @@ export class UserRepository extends Repository<UserEntity> {
             where: { email },
         });
     }
+
+    async updatePassword(
+        email: string,
+        newHashedPassword: string,
+        newSalt: string,
+    ): Promise<void> {
+        await this.userRepository.update(
+            { email },
+            { password: newHashedPassword, salt: newSalt },
+        );
+    }
 }
