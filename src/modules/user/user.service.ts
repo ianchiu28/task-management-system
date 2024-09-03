@@ -8,7 +8,12 @@ import * as bcrypt from "bcrypt";
 
 import { ERROR_PREFIX } from "../../common/constants";
 
-import { CreateUserReqDto, LoginReqDto, ChangePasswordReqDto } from "./dto";
+import {
+    CreateUserReqDto,
+    LoginReqDto,
+    ChangePasswordReqDto,
+    DeleteUserReqDto,
+} from "./dto";
 import { UserRepository } from "./user.repository";
 
 @Injectable()
@@ -70,8 +75,26 @@ export class UserService {
         await this.userRepository.updatePassword(email, newHashedPassword, newSalt);
     }
 
-    deleteUser(): string {
-        return null;
+    async deleteUser(
+        email: string,
+        deleteUserDto: DeleteUserReqDto,
+    ): Promise<void> {
+        const { password } = deleteUserDto;
+
+        // Get user's current password info
+        const { salt, password: currentHashedPassword } =
+            await this.userRepository.getPasswordInfo(email);
+
+        // Verify password
+        const hashedPassword = await bcrypt.hash(password, salt);
+        if (hashedPassword !== currentHashedPassword) {
+            throw new UnauthorizedException(`
+                ${ERROR_PREFIX.INVALID_CREDENTIALS}: Incorrect password
+            `);
+        }
+
+        // Delete user
+        await this.userRepository.delete({ email });
     }
 
     async login(loginReqDto: LoginReqDto): Promise<string> {

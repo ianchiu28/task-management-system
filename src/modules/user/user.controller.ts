@@ -17,6 +17,7 @@ import {
     LoginReqDto,
     LoginResDto,
     ChangePasswordReqDto,
+    DeleteUserReqDto,
 } from "./dto";
 import { UserService } from "./user.service";
 
@@ -43,11 +44,15 @@ export class UserController {
         await this.userService.changePassword(email, changePasswordDto);
     }
 
-    @Post("delete-account")
+    @Post("delete")
     @HttpCode(HttpStatus.OK)
-    deleteUser(@Body() deleteUserDto: string) {
-        console.log(deleteUserDto);
-        return this.userService.deleteUser();
+    @UseGuards(AuthGuard)
+    deleteUser(
+        @Request() req: { user: IRequestUser },
+        @Body() deleteUserDto: DeleteUserReqDto,
+    ) {
+        const { email } = req.user;
+        return this.userService.deleteUser(email, deleteUserDto);
     }
 
     @Post("login")

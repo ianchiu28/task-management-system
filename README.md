@@ -8,7 +8,7 @@ Simple task management system. Allowed to operate tasks via Restful APIs
 | -- | -- | -- |
 | Register Account | POST | /users |
 | Change Password | PUT | /users/password |
-| Delete Account | POST | /users/delete-account |
+| Delete Account | POST | /users/delete |
 | Login | POST | /users/login |
 | Create Task | POST | /tasks |
 | Read Tasks | GET | /tasks |
