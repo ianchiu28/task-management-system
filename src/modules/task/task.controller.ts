@@ -1,37 +1,37 @@
 import {
     Controller,
 //     Get,
-//     Post,
+    Post,
 //     Put,
 //     Delete,
-//     Body,
+    Body,
 //     Param,
     UseGuards,
-//     Request,
-//     HttpCode,
-//     HttpStatus,
+    Request,
+    HttpCode,
+    HttpStatus,
 } from "@nestjs/common";
 
 import { AuthGuard } from "../../common/guards";
-// import { IRequestUser } from "../../common/interfaces";
+import { IRequestUser } from "../../common/interfaces";
 
+import { CreateTaskReqDto, CreateTaskResDto } from "./dto";
 import { TaskService } from "./task.service";
-// import { CreateTaskDto, UpdateTaskDto } from "./dto";
 
 @Controller("tasks")
 @UseGuards(AuthGuard)
 export class TaskController {
     constructor(private readonly taskService: TaskService) {}
 
-//     @Post()
-//     @HttpCode(HttpStatus.CREATED)
-//     async createTask(
-//         @Request() req: { user: IRequestUser },
-//         @Body() createTaskDto: CreateTaskDto
-//     ) {
-//         const { email } = req.user;
-//         return this.taskService.createTask(email, createTaskDto);
-//     }
+    @Post()
+    @HttpCode(HttpStatus.OK)
+    async createTask(
+        @Request() req: { user: IRequestUser },
+        @Body() createTaskReqDto: CreateTaskReqDto,
+    ): Promise<CreateTaskResDto> {
+        const { email } = req.user;
+        return this.taskService.createTask(email, createTaskReqDto);
+    }
 
 //     @Get()
 //     @HttpCode(HttpStatus.OK)
