@@ -1,17 +1,37 @@
-import { Injectable/*, NotFoundException*/ } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 
+import { ERROR_PREFIX } from "../../common/constants";
+import { UserRepository } from "../user/user.repository";
+
+import { CreateTaskReqDto, CreateTaskResDto } from "./dto";
 import { TaskRepository } from "./task.repository";
-// import { CreateTaskDto, UpdateTaskDto } from "./dto";
-// import { TaskEntity } from "./task.entity";
-// import { ERROR_PREFIX } from '../../common/constants';
 
 @Injectable()
 export class TaskService {
-    constructor(private readonly taskRepository: TaskRepository) {}
+    constructor(
+        private readonly taskRepository: TaskRepository,
+        private readonly userRepository: UserRepository,
+    ) {}
 
-//     async createTask(email: string, createTaskDto: CreateTaskDto): Promise<TaskEntity> {
-//         return this.taskRepository.createTask(email, createTaskDto);
-//     }
+    async createTask(
+        email: string,
+        createTaskReqDto: CreateTaskReqDto,
+    ): Promise<CreateTaskResDto> {
+        const user = await this.userRepository.findOne({ where: { email } });
+        if (!user) {
+            throw new NotFoundException(
+                `${ERROR_PREFIX.NOT_FOUND}: User not found`,
+            );
+        }
+
+        const task = await this.taskRepository.create({
+            ...createTaskReqDto,
+            user: { id: user.id },
+        });
+        await this.taskRepository.save(task);
+
+        return { uuid: task.uuid };
+    }
 
 //     async getTasks(email: string): Promise<TaskEntity[]> {
 //         return this.taskRepository.find({ where: { userEmail: email } });
