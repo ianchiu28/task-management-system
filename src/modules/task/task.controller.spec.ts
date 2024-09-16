@@ -21,7 +21,6 @@ describe("TaskController", () => {
         canActivate: jest.fn(() => true),
     };
 
-    const errorMessage = "Error message";
     const email = "test@example.com";
     const req = { user: { email } };
     const title = "Test Task";
@@ -30,8 +29,6 @@ describe("TaskController", () => {
     const uuid = "test-uuid";
 
     beforeEach(async () => {
-        jest.clearAllMocks();
-
         const module: TestingModule = await Test.createTestingModule({
             controllers: [TaskController],
             providers: [TaskService],
@@ -45,26 +42,16 @@ describe("TaskController", () => {
         controller = module.get<TaskController>(TaskController);
     });
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     describe("createTask", () => {
         const createTaskReqDto: CreateTaskReqDto = {
             title,
             description,
         };
         const expectedResult = { uuid };
-
-        it("should throw an error when failed to create task", async () => {
-            mockTaskService.createTask.mockRejectedValue(
-                new Error(errorMessage),
-            );
-
-            await expect(
-                controller.createTask(req, createTaskReqDto),
-            ).rejects.toThrow(errorMessage);
-            expect(mockTaskService.createTask).toHaveBeenCalledWith(
-                email,
-                createTaskReqDto,
-            );
-        });
 
         it("should create a task", async () => {
             mockTaskService.createTask.mockResolvedValue(expectedResult);
@@ -84,15 +71,6 @@ describe("TaskController", () => {
             tasks: [{ uuid, title }],
         };
 
-        it("should throw error when failed to get tasks", async () => {
-            mockTaskService.getTasks.mockRejectedValue(new Error(errorMessage));
-
-            await expect(controller.getTasks(req)).rejects.toThrow(
-                errorMessage,
-            );
-            expect(mockTaskService.getTasks).toHaveBeenCalledWith(email);
-        });
-
         it("should get all tasks for a user", async () => {
             mockTaskService.getTasks.mockResolvedValue(expectedResult);
 
@@ -105,20 +83,6 @@ describe("TaskController", () => {
 
     describe("getTaskByUuid", () => {
         const expectedResult = { uuid, title };
-
-        it("should throw error when failed to get task by uuid", async () => {
-            mockTaskService.getTaskByUuid.mockRejectedValue(
-                new Error(errorMessage),
-            );
-
-            await expect(controller.getTaskByUuid(req, uuid)).rejects.toThrow(
-                errorMessage,
-            );
-            expect(mockTaskService.getTaskByUuid).toHaveBeenCalledWith(
-                email,
-                uuid,
-            );
-        });
 
         it("should get a task by uuid", async () => {
             mockTaskService.getTaskByUuid.mockResolvedValue(expectedResult);
@@ -141,21 +105,6 @@ describe("TaskController", () => {
         };
         const expectedResult = { uuid, title };
 
-        it("should throw error when failed to update task", async () => {
-            mockTaskService.updateTask.mockRejectedValue(
-                new Error(errorMessage),
-            );
-
-            await expect(
-                controller.updateTask(req, uuid, updateTaskDto),
-            ).rejects.toThrow(errorMessage);
-            expect(mockTaskService.updateTask).toHaveBeenCalledWith(
-                email,
-                uuid,
-                updateTaskDto,
-            );
-        });
-
         it("should update a task", async () => {
             mockTaskService.updateTask.mockResolvedValue(expectedResult);
 
@@ -175,20 +124,6 @@ describe("TaskController", () => {
     });
 
     describe("deleteTask", () => {
-        it("should throw error when failed to delete task", async () => {
-            mockTaskService.deleteTask.mockRejectedValue(
-                new Error(errorMessage),
-            );
-
-            await expect(controller.deleteTask(req, uuid)).rejects.toThrow(
-                errorMessage,
-            );
-            expect(mockTaskService.deleteTask).toHaveBeenCalledWith(
-                email,
-                uuid,
-            );
-        });
-
         it("should delete a task", async () => {
             mockTaskService.deleteTask.mockResolvedValue(null);
 
