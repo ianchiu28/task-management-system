@@ -47,12 +47,12 @@ export class UserController {
     @Post("delete")
     @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard)
-    deleteUser(
+    async deleteUser(
         @Request() req: { user: IRequestUser },
         @Body() deleteUserDto: DeleteUserReqDto,
     ) {
         const { email } = req.user;
-        return this.userService.deleteUser(email, deleteUserDto);
+        await this.userService.deleteUser(email, deleteUserDto);
     }
 
     @Post("login")
