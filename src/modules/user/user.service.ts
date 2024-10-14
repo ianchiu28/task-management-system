@@ -72,7 +72,11 @@ export class UserService {
         const newHashedPassword = await bcrypt.hash(newPassword, newSalt);
 
         // Update user's password in the repository
-        await this.userRepository.updatePassword(email, newHashedPassword, newSalt);
+        await this.userRepository.updatePassword(
+            email,
+            newHashedPassword,
+            newSalt,
+        );
     }
 
     async deleteUser(
