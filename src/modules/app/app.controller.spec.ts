@@ -1,22 +1,32 @@
-// import { Test, TestingModule } from "@nestjs/testing";
-// import { AppController } from "./app.controller";
-// import { AppService } from "./app.service";
+import { Test, TestingModule } from "@nestjs/testing";
 
-// describe("AppController", () => {
-//     let appController: AppController;
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
-//     beforeEach(async () => {
-//         const app: TestingModule = await Test.createTestingModule({
-//             controllers: [AppController],
-//             providers: [AppService],
-//         }).compile();
+describe("AppController", () => {
+    let appController: AppController;
 
-//         appController = app.get<AppController>(AppController);
-//     });
+    const mockAppService = {
+        healthCheck: jest.fn(),
+    };
 
-//     describe("root", () => {
-//         it("should return \"Hello World!\"", () => {
-//             expect(appController.getHello()).toBe("Hello World!");
-//         });
-//     });
-// });
+    beforeEach(async () => {
+        const app: TestingModule = await Test.createTestingModule({
+            controllers: [AppController],
+            providers: [AppService],
+        })
+            .overrideProvider(AppService)
+            .useValue(mockAppService)
+            .compile();
+
+        appController = app.get<AppController>(AppController);
+    });
+
+    describe("healthCheck", () => {
+        it("should call healthCheck method", async () => {
+            await appController.healthCheck();
+
+            expect(mockAppService.healthCheck).toHaveBeenCalled();
+        });
+    });
+});
