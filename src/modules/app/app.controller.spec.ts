@@ -4,14 +4,14 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 
 describe("AppController", () => {
-    let appController: AppController;
+    let controller: AppController;
 
     const mockAppService = {
         healthCheck: jest.fn(),
     };
 
     beforeEach(async () => {
-        const app: TestingModule = await Test.createTestingModule({
+        const module: TestingModule = await Test.createTestingModule({
             controllers: [AppController],
             providers: [AppService],
         })
@@ -19,12 +19,12 @@ describe("AppController", () => {
             .useValue(mockAppService)
             .compile();
 
-        appController = app.get<AppController>(AppController);
+        controller = module.get<AppController>(AppController);
     });
 
     describe("healthCheck", () => {
         it("should call healthCheck method", async () => {
-            await appController.healthCheck();
+            await controller.healthCheck();
 
             expect(mockAppService.healthCheck).toHaveBeenCalled();
         });
