@@ -7,7 +7,7 @@ import { AppModule } from "../src/modules/app/app.module";
 describe("App E2E Test", () => {
     let app: INestApplication;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [AppModule],
         }).compile();
@@ -16,7 +16,7 @@ describe("App E2E Test", () => {
         await app.init();
     });
 
-    afterEach(async () => {
+    afterAll(async () => {
         await app.close();
     });
 

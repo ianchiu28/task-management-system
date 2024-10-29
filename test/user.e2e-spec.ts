@@ -18,7 +18,7 @@ describe("User E2E Test", () => {
     const password = "password";
     const newPassword = "newPassword";
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 ConfigModule.forRoot({
@@ -50,7 +50,7 @@ describe("User E2E Test", () => {
         await app.init();
     });
 
-    afterEach(async () => {
+    afterAll(async () => {
         await app.close();
     });
 
