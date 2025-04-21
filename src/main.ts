@@ -1,6 +1,10 @@
+import { writeFileSync } from "fs";
+import { join } from "path";
+
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import * as yaml from "js-yaml";
 
 import { HttpExceptionFilter } from "./common/exceptionFilters";
 import { ResponseInterceptor } from "./common/interceptors";
@@ -18,6 +22,10 @@ async function bootstrap() {
         .build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup("api", app, document);
+
+    // 匯出 Swagger 文檔 (YAML)
+    const outputPath = join(process.cwd(), "swagger");
+    writeFileSync(join(outputPath, "swagger.yaml"), yaml.dump(document));
 
     app.useGlobalInterceptors(new ResponseInterceptor());
     app.useGlobalPipes(new ValidationPipe());
