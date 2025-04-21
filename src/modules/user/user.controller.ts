@@ -8,6 +8,12 @@ import {
     UseGuards,
     Request,
 } from "@nestjs/common";
+import {
+    ApiBearerAuth,
+    ApiOperation,
+    ApiResponse,
+    ApiTags,
+} from "@nestjs/swagger";
 
 import { AuthGuard } from "../../common/guards";
 import { IRequestUser } from "../../common/interfaces";
@@ -21,10 +27,29 @@ import {
 } from "./dto";
 import { UserService } from "./user.service";
 
+@ApiTags("Users")
 @Controller("users")
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
+    @ApiOperation({ summary: "Create a new user" })
+    @ApiResponse({
+        status: 200,
+        description: "User created successfully",
+        schema: {
+            type: "object",
+            properties: {
+                message: {
+                    type: "string",
+                    example: "Success",
+                },
+                data: {
+                    type: "object",
+                    example: {},
+                },
+            },
+        },
+    })
     @Post()
     @HttpCode(HttpStatus.OK)
     async createUser(
@@ -33,6 +58,25 @@ export class UserController {
         await this.userService.createUser(createUserReqDto);
     }
 
+    @ApiOperation({ summary: "Change user password" })
+    @ApiBearerAuth()
+    @ApiResponse({
+        status: 200,
+        description: "Password changed successfully",
+        schema: {
+            type: "object",
+            properties: {
+                message: {
+                    type: "string",
+                    example: "Success",
+                },
+                data: {
+                    type: "object",
+                    example: {},
+                },
+            },
+        },
+    })
     @Patch("password")
     @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard)
@@ -44,6 +88,25 @@ export class UserController {
         await this.userService.changePassword(email, changePasswordDto);
     }
 
+    @ApiOperation({ summary: "Delete user account" })
+    @ApiBearerAuth()
+    @ApiResponse({
+        status: 200,
+        description: "User deleted successfully",
+        schema: {
+            type: "object",
+            properties: {
+                message: {
+                    type: "string",
+                    example: "Success",
+                },
+                data: {
+                    type: "object",
+                    example: {},
+                },
+            },
+        },
+    })
     @Post("delete")
     @HttpCode(HttpStatus.OK)
     @UseGuards(AuthGuard)
@@ -55,6 +118,29 @@ export class UserController {
         await this.userService.deleteUser(email, deleteUserDto);
     }
 
+    @ApiOperation({ summary: "User login" })
+    @ApiResponse({
+        status: 200,
+        description: "Login successful",
+        schema: {
+            type: "object",
+            properties: {
+                message: {
+                    type: "string",
+                    example: "Success",
+                },
+                data: {
+                    type: "object",
+                    properties: {
+                        accessToken: {
+                            type: "string",
+                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        },
+                    },
+                },
+            },
+        },
+    })
     @Post("login")
     @HttpCode(HttpStatus.OK)
     async login(@Body() loginReqDto: LoginReqDto): Promise<LoginResDto> {
