@@ -13,6 +13,13 @@ import { AppModule } from "./modules/app/app.module";
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
+    // Enable CORS
+    app.enableCors({
+        origin: true, // Allow all origins
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+        credentials: true,
+    });
+
     // Swagger
     const config = new DocumentBuilder()
         .setTitle("Task Management System API")
